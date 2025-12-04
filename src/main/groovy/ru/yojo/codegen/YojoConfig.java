@@ -2,51 +2,53 @@ package ru.yojo.codegen;
 
 import groovy.lang.Closure;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import ru.yojo.codegen.meta.Configuration;
 
 import javax.inject.Inject;
-
+import java.util.ArrayList;
 
 public class YojoConfig {
-
-    final String name;
-    private ProjectLayout layout;
-
-    private final Configuration yojoConfiguration;
+    private final String name;
+    private final ProjectLayout layout;
+    private final Configuration configuration;
 
     @Inject
-    public YojoConfig(String name, ProviderFactory providers, ProjectLayout layout) {
+    public YojoConfig(String name, ProviderFactory providers, ObjectFactory objects, ProjectLayout layout) {
         this.name = name;
         this.layout = layout;
-        System.out.println("YOJO READ CONFIGURATIONS");
-        this.yojoConfiguration = yojoDefaultConfiguration();
+        this.configuration = objects.newInstance(Configuration.class, layout);
+        // Инициализация defaults
+        this.configuration.getSpecificationProperties().addAll(new ArrayList<>());
+    }
+
+    // DSL: specificationProperties { api { ... } }
+    @SuppressWarnings("unused")
+    public void specificationProperties(Closure<?> closure) {
+        YojoConfig.applyClosureToDelegate(closure, configuration.getSpecificationProperties());
+    }
+
+    // DSL: springBootVersion = "3.2.0", lombok { ... }, etc.
+    @SuppressWarnings("unused")
+    public void springBootVersion(String version) {
+        configuration.setSpringBootVersion(version);
     }
 
     @SuppressWarnings("unused")
-    public void yojoConfiguration(Closure<?> closure) {
-        applyClosureToDelegate(closure, yojoConfiguration);
+    public void lombok(Closure<?> closure) {
+        YojoConfig.applyClosureToDelegate(closure, configuration.getLombok());
     }
 
-    private Configuration yojoDefaultConfiguration() {
-        return new Configuration(layout)
-                .withAccessors();
-    }
-
+    // Геттеры
     public String getName() {
         return name;
     }
 
-    public Configuration getYojoConfiguration() {
-        return yojoConfiguration;
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
-    /**
-     * Applies the given closure to the given delegate.
-     *
-     * @param closure  the closure to apply
-     * @param delegate the delegate that the closure is applied to
-     */
     public static void applyClosureToDelegate(Closure<?> closure, Object delegate) {
         Closure<?> copy = (Closure<?>) closure.clone();
         copy.setResolveStrategy(Closure.DELEGATE_FIRST);
@@ -57,5 +59,4 @@ public class YojoConfig {
             copy.call(delegate);
         }
     }
-
 }

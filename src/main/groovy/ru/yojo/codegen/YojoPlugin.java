@@ -13,9 +13,9 @@ public class YojoPlugin implements Plugin<Project> {
 
         yojoExtension.getConfigurations().configureEach(config -> {
             String taskName = "generateClasses";
-            TaskProvider<YojoGenerateTask> yojo = project.getTasks().register(taskName, YojoGenerateTask.class, config, project.getExtensions());
+            TaskProvider<YojoGenerateTask> yojo = project.getTasks().register(taskName, YojoGenerateTask.class, config, project.getLayout());
             yojo.configure(task -> {
-                task.setDescription(String.format("Generates the Yojo sources from the %s Yojo configuration.", config.name));
+                task.setDescription(String.format("Generates the Yojo sources from the %s Yojo configuration.", config.getName()));
                 task.setGroup("YOJO");
             });
         });

@@ -1,0 +1,586 @@
+asyncapi: 2.0.0
+info:
+  title: Account Service
+  version: 1.0.0
+  description: "This service is test example of properties, which yojo can understand :rocket:"
+channels:
+  Request:
+    subscribe:
+      message:
+        $ref: '#/components/messages/RequestDtoByRef'
+  PolymorphMessage:
+    subscribe:
+      message:
+        payload:
+          oneOf:
+            - $ref: '#/components/schemas/PolymorphExampleOne'
+            - $ref: '#/components/schemas/PolymorphExampleTwo'
+    publish:
+      message:
+        payload:
+          oneOf:
+            - $ref: '#/components/schemas/PolymorphExampleThree'
+            - $ref: '#/components/schemas/PolymorphExampleFour'
+components:
+  messages:
+    PolymorphicMessageInComponents:
+      payload:
+        oneOf:
+          - $ref: '#/components/schemas/PolymorphExampleOne'
+          - $ref: '#/components/schemas/PolymorphExampleTwo'
+    RequestDtoByRef:
+      payload:
+        pathForGenerateMessage: 'io.github.somepath'
+        #If you use this way of contract, yojo does not generate referenced object
+        $ref: '#/components/schemas/RequestDtoSchema'
+    RequestDtoByRefAndProperties:
+      payload:
+        $ref: '#/components/schemas/RequestDtoSchema'
+        properties:
+          someString:
+            type: string
+    RequestDtoWithProperties:
+      payload:
+        properties:
+          someString:
+            type: string
+          someOneObject:
+            type: object
+            description: Inheritance object
+            properties:
+              someField:
+                type: string
+                description: someField description
+          aComplexProperty:
+            type: object
+            properties:
+              prop1:
+                type: object
+                additionalProperties:
+                  anyOf:
+                    - type: boolean
+                    - type: string
+                    - type: integer
+                description: "A dynamic object where each key is a feature, and the value"
+                example:
+                  prop1: 100
+                  prop2: "foo"
+                  prop3: true
+    RequestDtoWithDoubleInheritance:
+      payload:
+        lombok:
+          accessors:
+            chain: true
+          equalsAndHashCode:
+            enable: true
+            callSuper: true
+        $ref: '#/components/schemas/RequestDtoSchema'
+        implements:
+          fromInterface:
+            - testGenerate.InterfaceForImpl
+            - testGenerate.InterfaceForImpl2
+        extends:
+          fromClass: ClassForExtends
+          fromPackage: example.testGenerate.common
+    RequestDtoInheritanceFromSchema:
+      payload:
+        $ref: '#/components/schemas/RequestDtoSchema'
+        extends:
+          fromClass: RequestDtoSchema
+          fromPackage: example.testGenerate.common
+  schemas:
+    PolymorphExampleOne:
+      type: object
+      properties:
+        status:
+          type: string
+    PolymorphExampleTwo:
+      type: object
+      properties:
+        status:
+          type: string
+        someField:
+          type: integer
+    PolymorphExampleThree:
+      allOf:
+        - $ref: '#/components/schemas/ExampleOne'
+        - $ref: '#/components/schemas/ExampleTwo'
+    PolymorphExampleFour:
+      allOf:
+        - $ref: '#/components/schemas/ExampleOne'
+        - $ref: '#/components/schemas/ExampleTwo'
+        - type: object
+      properties:
+        oneMoreField:
+          type: boolean
+    ExampleOne:
+      type: object
+      properties:
+        status:
+          type: string
+    ExampleTwo:
+      type: object
+      properties:
+        status:
+          type: string
+        someField:
+          type: integer
+    ExampleThree:
+      allOf:
+        - $ref: '#/components/schemas/ExampleOne'
+        - $ref: '#/components/schemas/ExampleTwo'
+        - $ref: '#/components/schemas/ExampleFour'
+      type: object
+      properties:
+        oneMoreField:
+          type: boolean
+    ExampleFour:
+      allOf:
+        - $ref: '#/components/schemas/ExampleFive'
+      type: object
+      properties:
+        fromFour:
+          type: boolean
+    ExampleFive:
+      allOf:
+        - $ref: '#/components/schemas/RequestDtoSchema'
+      type: object
+      properties:
+        oneMoreField:
+          type: boolean
+        fromFive:
+          type: string
+    RequestDtoSchema:
+      type: object
+      lombok:
+        accessors:
+          enable: false
+      equalsAndHashCode:
+        enable: true
+      description: RequestExample
+      implements:
+        fromInterface:
+          - testGenerate.InterfaceForImpl
+          - testGenerate.InterfaceForImpl2
+      extends:
+        fromClass: ClassForExtends
+        fromPackage: example.testGenerate.common
+      #Validation Groups was added for backward compatibility. Must be used with required.
+      #validationGroups contains name of Class
+#      validationGroups:
+#        - ApplicationValidation.Application.class
+#      #validationGroupsImports contains import of Class
+#      validationGroupsImports:
+#        - ru.yojo.codegen.validation.ApplicationValidation
+#      #validateByGroups contains name of fields, which yojo will mark with annotation NotBlank, NotNull etc.
+#      #with params (groups = {Some.class})
+#      validateByGroups:
+#        - requestType
+#        - isTwoCities
+#        - collectionTypes
+#        - integerValidationField
+#        - uuidValidationList
+      required:
+        - requestType
+        - isTwoCities
+        - collectionTypes
+        - integerValidationField
+        - uuidValidationList
+        - listOfPrimitivesRequired
+        - setOfPrimitivesRequired
+        - StringValues
+      properties:
+        polymorph:
+          oneOf:
+            - $ref: '#/components/schemas/PolymorphExampleOne'
+            - $ref: '#/components/schemas/PolymorphExampleTwo'
+        polymorphWithInsidePolymorph:
+          type: object
+          $ref: '#/components/schemas/PolymorphExampleThree'
+
+        #If you want to use plugin AsynApi - all references must be in main contract
+
+        primitives:
+          type: object
+          description: Here was located all supported primitives
+          $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+
+        objectTypes:
+          type: object
+          description: Here was located all supported object types
+          $ref: './separated/objectTypes.yaml#/components/schemas/ObjectTypes'
+
+        #When name starts with UpperCase, it will uncapitalize
+        #Also here we annotate this object with @Valid and @NotNull
+        StringValues:
+          type: object
+          description: Here was located all supported strings values
+          $ref: './separated/stringValues.yaml#/components/schemas/StringValues'
+        numericsValues:
+          type: object
+          description: Here was located all supported numeric values
+          $ref: './separated/numericValues.yaml#/components/schemas/NumericsValues'
+
+        collectionTypes:
+          type: array
+          description: Here was located all supported collections
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/collectionTypes.yaml#/components/schemas/CollectionTypes'
+        listOfPrimitives:
+          type: array
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+        listOfPrimitivesRequired:
+          type: array
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+        listOfPrimitivesWithRealization:
+          type: array
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+            realization: LinkedList
+        setOfPrimitives:
+          type: array
+          format: set
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+        setOfPrimitivesRequired:
+          type: array
+          format: set
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+        setOfPrimitivesWithRealization:
+          type: array
+          format: set
+          items:
+            #Attribute Type object is required attribute if you use separated contract
+            type: object
+            $ref: './separated/primitives.yaml#/components/schemas/Primitives'
+            realization: HashSet
+
+        integerValidationField:
+          type: integer
+        uuidValidationList:
+          type: array
+          items:
+            type: object
+            format: uuid
+        innerSchema:
+          type: object
+          properties:
+            someString:
+              type: string
+
+        #MAP String key
+        mapStringInteger:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            type: integer
+        mapStringObject:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            type: object
+        mapStringObjectWithHashMap:
+          type: object
+          description: Map generation Example
+          realization: HashMap
+          additionalProperties:
+            type: object
+        mapStringObjectWithLinkedHashMap:
+          type: object
+          description: Map generation Example
+          realization: LinkedHashMap
+          additionalProperties:
+            type: object
+        mapStringCustomObject:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            $ref: '#/components/schemas/SomeObject'
+        mapStringExistingObject:
+          type: string
+          description: Map generation Example
+          additionalProperties:
+            type: object
+            format: existing
+            name: ExistingClass
+            package: testGenerate
+        mapStringSetOfCustomObject:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            $ref: '#/components/schemas/SomeObject'
+        mapStringSetOfStrings:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            additionalFormat: string
+        mapStringSetOfExistingObject:
+          type: object
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            name: ExistingClass
+            package: testGenerate
+
+        #MAP UUID key
+
+        mapUUIDInteger:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: integer
+        mapUUIDObject:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: object
+        mapUUIDObjectWithHashMap:
+          type: object
+          format: uuid
+          description: Map generation Example
+          realization: HashMap
+          additionalProperties:
+            type: object
+        mapUUIDObjectWithLinkedHashMap:
+          type: object
+          format: uuid
+          description: Map generation Example
+          realization: LinkedHashMap
+          additionalProperties:
+            type: object
+        mapUUIDCustomObject:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            $ref: '#/components/schemas/SomeObject'
+        mapUUIDExistingObject:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: object
+            format: existing
+            name: ExistingClass
+            package: testGenerate
+        mapUUIDSetOfCustomObject:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            $ref: '#/components/schemas/SomeObject'
+        mapUUIDSetOfStrings:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            additionalFormat: string
+        mapUUIDSetOfExistingObject:
+          type: object
+          format: uuid
+          description: Map generation Example
+          additionalProperties:
+            type: array
+            format: set
+            name: ExistingClass
+            package: testGenerate
+
+        innerEnumWithDescription:
+          type: object
+          enum:
+            - SUCCESS
+            - DECLINE
+            - ERROR
+          x-enumNames:
+            SUCCESS: Success value
+            DECLINE: Decline value
+            ERROR: Error value
+          description: |
+            Result of request
+                 * <p>
+                 * Supported values:
+                 * «SUCCESS» - Ok
+                 * «DECLINE» - Decline
+                 * «ERROR» - Error
+        innerEnumWithoutDescription:
+          type: object
+          enum:
+            - SUCCESS
+            - DECLINE
+            - ERROR
+          description: |
+            Result of request
+                 * <p>
+                 * Supported values:
+                 * «SUCCESS» - Ok
+                 * «DECLINE» - Decline
+                 * «ERROR» - Error
+
+        innerEnumWithoutDescriptionSmall:
+          type: object
+          enum:
+            - success
+            - decline
+            - error
+          description: |
+            Result of request
+                 * <p>
+                 * Supported values:
+                 * «success» - Ok
+                 * «decline» - Decline
+                 * «error» - Error
+        enumResultWithDescription:
+          type: object
+          $ref: '#/components/schemas/EnumResultWithDescription'
+        enumResultWithoutDescription:
+          type: object
+          $ref: '#/components/schemas/EnumResultWithoutDescription'
+        someObject:
+          type: object
+          $ref: '#/components/schemas/SomeObject'
+
+    SomeObject:
+      type: object
+      lombok:
+        accessors:
+          chain: true
+        equalsAndHashCode:
+          enable: true
+          callSuper: false
+      extends:
+        fromClass: ClassForExtends
+        fromPackage: example.testGenerate.common
+      properties:
+        someInteger:
+          type: integer
+        #same name of existing class
+        innerSchema:
+          type: object
+          properties:
+            someString:
+              type: string
+            someExistingObject:
+              type: object
+              name: ExistingClass
+              package: testGenerate
+
+    SomeObjectImpl:
+      type: object
+      implements:
+        fromInterface:
+          - testGenerate.InterfaceForImpl
+      properties:
+        someInteger:
+          type: integer
+
+    EnumResultWithDescription:
+      type: object
+      enum:
+        - SUCCESS
+        - DECLINE
+        - ERROR
+      x-enumNames:
+        SUCCESS: Success value
+        DECLINE: Decline value
+        ERROR: Error value
+      description: |
+        Result of request
+             * <p>
+             * Supported values:
+             * «SUCCESS» - Ok
+             * «DECLINE» - Decline
+             * «ERROR» - Error
+
+    EnumResultWithoutDescription:
+      type: object
+      enum:
+        - SUCCESS
+        - DECLINE
+        - ERROR
+      description: |
+        Result of request
+             * <p>
+             * Supported values:
+             * «SUCCESS» - Ok
+             * «DECLINE» - Decline
+             * «ERROR» - Error
+
+    EnumResultWithoutDescriptionSmall:
+      type: object
+      enum:
+        - success
+        - decline
+        - error
+      description: |
+        Result of request
+             * <p>
+             * Supported values:
+             * «success» - Ok
+             * «decline» - Decline
+             * «error» - Error
+
+    ClassForExtends:
+      type: object
+      description: This Class just fo Example of extends after generate
+      lombok:
+        accessors:
+          chain: true
+      properties:
+        someString:
+          type: string
+
+    MarkerInterface:
+      type: object
+      format: interface
+      description: It is marker Interface
+
+    InterfaceWithMethods:
+      type: object
+      format: interface
+      description: It is interface with Methods
+      imports:
+        - example.testGenerate.common.InnerSchema
+      methods:
+        methodOne:
+          description: This is void method
+          definition: void someOne(String someString, InnerSchema schema)
+        methodTwo:
+          description: This is method with return statement
+          definition: InnerSchema anotherOne(String someString, InnerSchema schema)
+
+    InterfaceWithMethodsWithoutDescription:
+      type: object
+      format: interface
+      imports:
+        - example.testGenerate.common.InnerSchema
+      methods:
+        methodOne:
+          definition: void someOne(String someString, InnerSchema schema)
+        methodTwo:
+          definition: InnerSchema anotherOne(String someString, InnerSchema schema)

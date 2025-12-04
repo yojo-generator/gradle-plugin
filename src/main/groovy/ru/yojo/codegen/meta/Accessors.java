@@ -15,7 +15,7 @@ public class Accessors {
         return enable;
     }
 
-    public void setEnable(boolean enable) {
+    public void enable(boolean enable) {
         this.enable = enable;
     }
 
@@ -23,7 +23,7 @@ public class Accessors {
         return fluent;
     }
 
-    public void setFluent(boolean fluent) {
+    public void fluent(boolean fluent) {
         this.fluent = fluent;
     }
 
@@ -31,7 +31,7 @@ public class Accessors {
         return chain;
     }
 
-    public void setChain(boolean chain) {
+    public void chain(boolean chain) {
         this.chain = chain;
     }
 }

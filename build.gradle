@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'io.github.yojo-generator'
-version '0.5.3'
+version '1.0.0'
 
 //LocalPublishing
 //publishing {
@@ -36,7 +36,7 @@ allprojects {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    api 'io.github.yojo-generator:generator:1.0.3'
+    api 'io.github.yojo-generator:generator:2.0.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
 }
