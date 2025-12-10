@@ -8,30 +8,13 @@ plugins {
 }
 
 group 'io.github.yojo-generator'
-version '1.0.0'
-
-//LocalPublishing
-//publishing {
-//    repositories {
-//        maven {
-//            url = "$buildDir/repo"
-//        }
-//    }
-//}
+version '1.0.1'
 
 allprojects {
     repositories {
         mavenCentral()
     }
 }
-
-//jar {
-//    zip64 = true
-//    from {
-//        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-//        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-//    }
-//}
 
 dependencies {
     implementation gradleApi()
@@ -44,48 +27,6 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-//publishing {
-//    repositories {
-//        maven {
-//            name = "GitHubPackages"
-//            url = uri("https://maven.pkg.github.com/yojo-generator/gradle-plugin")
-//            credentials {
-//                username = project.findProperty("user") ?: System.getenv("USERNAME")
-//                password = project.findProperty("token") ?: System.getenv("TOKEN")
-//            }
-//        }
-//    }
-//}
-//    publications {
-//        pluginPublication(MavenPublication) {
-//            artifactId = "gradle-plugin"
-//            groupId = "ru.yojo"
-//            version = "0.0.1"
-//            pom {
-//                packaging = "jar"
-//                name.set("YOJO gradle plugin")
-//                url.set("https://github.com/yojo-generator/gradle-plugin")
-//                description.set("This yojo gradle plugin")
-//
-//                licenses {
-//                    license {
-//                        name.set("The Apache License, Version 2.0")
-//                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        id.set("YOJO Generator Plugin")
-//                        name.set("Vladimir Morozkin")
-//                        email.set("jvmorozkin@gmail.com")
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 ext {
     junitVersion = '5.8.2'
