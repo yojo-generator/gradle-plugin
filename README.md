@@ -29,14 +29,14 @@
 ### Groovy DSL (`build.gradle`)
 ```groovy
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.0.2'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.0.3'
 }
 ```
 
 ### Kotlin DSL (`build.gradle.kts`)
 ```kotlin
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.0.2"
+    id("io.github.yojo-generator.gradle-plugin") version "1.0.3"
 }
 ```
 
@@ -100,14 +100,14 @@ yojo {
                 register("api") {
                     specName.set("api.yaml")
                     inputDirectory.set(layout.projectDirectory.dir("contract").asFile.absolutePath)
-                    outputDirectory.set(layout.buildDirectory.dir("generated/sources/yojo/api").get().asFile.absolutePath)
+                    outputDirectory.set(layout.buildDirectory.dir("generated/sources/yojo/api/com/example/api").get().asFile.absolutePath)
                     packageLocation.set("com.example.api")
                 }
                 register("events-api") {
                     specName.set("events.yaml")
                     inputDirectory.set(layout.projectDirectory.dir("contract").asFile.absolutePath)
                     outputDirectory.set(layout.buildDirectory.dir("generated/sources/yojo/events").get().asFile.absolutePath)
-                    packageLocation.set("com.example.events")
+                    packageLocation.set("events")
                 }
             }
 
