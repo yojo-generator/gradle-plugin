@@ -75,7 +75,7 @@ public class Configuration {
                         lombok.getAccessors().isEnable(),
                         lombok.getAccessors().isFluent(),
                         lombok.getAccessors().isChain())
-                        : null
+                        : new Accessors(false, false, false)
         );
 
         if (lombok.getEqualsAndHashCode() != null) {
