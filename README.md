@@ -29,14 +29,14 @@
 ### Groovy DSL (`build.gradle`)
 ```groovy
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.0.0'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.0.2'
 }
 ```
 
 ### Kotlin DSL (`build.gradle.kts`)
 ```kotlin
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.0.0"
+    id("io.github.yojo-generator.gradle-plugin") version "1.0.2"
 }
 ```
 
@@ -51,19 +51,18 @@ yojo {
         create("main") {
             specificationProperties {
                 register("api") {
-                    specName("api.yaml")
+                    specName("test.yaml")
                     inputDirectory(layout.projectDirectory.dir("contract").asFile.absolutePath)
-                    outputDirectory(layout.buildDirectory.dir("generated/sources/yojo/api").get().asFile.absolutePath)
+                    outputDirectory(layout.buildDirectory.dir("generated/sources/yojo/com/example/api").get().asFile.absolutePath)
                     packageLocation("com.example.api")
                 }
-                register("events-api") {
-                    specName("events.yaml")
+                register("one-more-api") {
+                    specName("test.yaml")
                     inputDirectory(layout.projectDirectory.dir("contract").asFile.absolutePath)
-                    outputDirectory(layout.buildDirectory.dir("generated/sources/yojo/events").get().asFile.absolutePath)
-                    packageLocation("com.example.events")
+                    outputDirectory(layout.buildDirectory.dir("generated/sources/yojo/oneMoreApi").get().asFile.absolutePath)
+                    packageLocation("oneMoreApi")
                 }
             }
-
             springBootVersion("3.2.0")
             lombok {
                 enable(true)
