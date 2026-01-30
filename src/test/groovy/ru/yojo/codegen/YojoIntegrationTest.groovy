@@ -70,7 +70,7 @@ class YojoIntegrationTest {
 
         assertTrue(new File(messagesDir, "RequestDtoWithProperties.java").exists())
         assertTrue(new File(commonDir, "SomeObject.java").exists())
-        assertTrue(new File(commonDir, "InnerEnumWithoutDescriptionSmall.java").exists())
+        assertTrue(new File(commonDir, "RequestDtoSchemaInnerEnumWithoutDescriptionSmall.java").exists())
         assertTrue(new File(commonDir, "CollectionTypes.java").exists())
     }
 }
