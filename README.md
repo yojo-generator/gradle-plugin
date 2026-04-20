@@ -25,18 +25,19 @@
 ---
 
 ## 📦 Installation
+Actual version: [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Gradle%20Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fio%2Fgithub%2Fyojo-generator%2Fgradle-plugin%2Fio.github.yojo-generator.gradle-plugin.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/io.github.yojo-generator.gradle-plugin)
 
 ### Groovy DSL (`build.gradle`)
 ```groovy
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.0.3'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.0.8'
 }
 ```
 
 ### Kotlin DSL (`build.gradle.kts`)
 ```kotlin
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.0.3"
+    id("io.github.yojo-generator.gradle-plugin") version "1.0.8"
 }
 ```
 
