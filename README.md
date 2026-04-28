@@ -30,14 +30,14 @@ Actual version: [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v
 ### Groovy DSL (`build.gradle`)
 ```groovy
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.0.8'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.1.0'
 }
 ```
 
 ### Kotlin DSL (`build.gradle.kts`)
 ```kotlin
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.0.8"
+    id("io.github.yojo-generator.gradle-plugin") version "1.1.0"
 }
 ```
 
