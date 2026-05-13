@@ -3,24 +3,18 @@ package ru.yojo.codegen;
 import groovy.lang.Closure;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.ProviderFactory;
 import ru.yojo.codegen.meta.Configuration;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 
 public class YojoConfig {
     private final String name;
-    private final ProjectLayout layout;
     private final Configuration configuration;
 
     @Inject
-    public YojoConfig(String name, ProviderFactory providers, ObjectFactory objects, ProjectLayout layout) {
+    public YojoConfig(String name, ObjectFactory objects, ProjectLayout layout) {
         this.name = name;
-        this.layout = layout;
         this.configuration = objects.newInstance(Configuration.class, layout);
-        // Инициализация defaults
-        this.configuration.getSpecificationProperties().addAll(new ArrayList<>());
     }
 
     // DSL: specificationProperties { api { ... } }
@@ -29,7 +23,13 @@ public class YojoConfig {
         YojoConfig.applyClosureToDelegate(closure, configuration.getSpecificationProperties());
     }
 
-    // DSL: springBootVersion = "3.2.0", lombok { ... }, etc.
+    // DSL: validationApi("JAKARTA") — preferred way to select javax vs jakarta
+    @SuppressWarnings("unused")
+    public void validationApi(String api) {
+        configuration.setValidationApi(api);
+    }
+
+    // DSL: springBootVersion("3.2.0") — legacy fallback (used when validationApi is not set)
     @SuppressWarnings("unused")
     public void springBootVersion(String version) {
         configuration.setSpringBootVersion(version);

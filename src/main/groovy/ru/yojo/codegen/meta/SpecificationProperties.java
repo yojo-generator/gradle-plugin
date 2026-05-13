@@ -17,9 +17,8 @@ public class SpecificationProperties {
     }
 
     public String getName() { return name; }
-    public String getSpecName() { return specName != null ? specName : name; }
+    public String getSpecName() { return specName; }
 
-    // геттеры/сеттеры для остального
     public String getInputDirectory() { return inputDirectory; }
     public void setInputDirectory(String inputDirectory) { this.inputDirectory = inputDirectory; }
 

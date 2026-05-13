@@ -52,13 +52,21 @@ class YojoIntegrationTest {
             config.configuration.lombok.enable = false
         }
 
-        // 3. Получаем и **корректно выполняем** задачу
-        def task = project.tasks.findByName("generateClasses")
-        assertNotNull(task, "Task 'generateClasses' should be registered by YojoPlugin")
+        // 3. Проверяем lifecycle task generateClasses
+        def lifecycleTask = project.tasks.findByName("generateClasses")
+        assertNotNull(lifecycleTask, "Lifecycle task 'generateClasses' should be registered")
+        assertEquals("YOJO", lifecycleTask.group, "Lifecycle task should belong to YOJO group")
+
+        // 3b. Находим и выполняем конфигурационную задачу для main
+        def configTask = project.tasks.findByName("generateClassesMain")
+        assertNotNull(configTask, "Config task 'generateClassesMain' should be registered for 'main' config")
+        assertEquals("YOJO", configTask.group, "Config task should belong to YOJO group")
+        assertTrue(lifecycleTask.getTaskDependencies().getDependencies(lifecycleTask).contains(configTask),
+                "Lifecycle task should depend on generateClassesMain")
 
         // ✅ ПРАВИЛЬНО: вызов через actions
-        task.actions.each { action ->
-            action.execute(task)
+        configTask.actions.each { action ->
+            action.execute(configTask)
         }
 
         // 4. Проверяем результат

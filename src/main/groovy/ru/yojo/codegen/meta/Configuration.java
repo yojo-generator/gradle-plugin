@@ -13,10 +13,10 @@ import ru.yojo.codegen.domain.lombok.LombokProperties;
 import javax.inject.Inject;
 
 public class Configuration {
-    private ProjectLayout layout;
-
     @Input
-    private String springBootVersion;
+    private String validationApi;           // "JAKARTA" or "JAVAX" — preferred way
+    @Input
+    private String springBootVersion;       // legacy fallback, used when validationApi is null
     @Input
     private Lombok lombok = new Lombok();
 
@@ -25,7 +25,6 @@ public class Configuration {
 
     @Inject
     public Configuration(ProjectLayout layout, ObjectFactory objects) {
-        this.layout = layout;
         this.specificationProperties = objects.domainObjectContainer(
                 SpecificationProperties.class,
                 name -> objects.newInstance(SpecificationProperties.class, name)
@@ -45,6 +44,14 @@ public class Configuration {
     }
 
     // -- Getters
+    public String getValidationApi() {
+        return validationApi;
+    }
+
+    public void setValidationApi(String validationApi) {
+        this.validationApi = validationApi;
+    }
+
     public String getSpringBootVersion() {
         return springBootVersion;
     }
