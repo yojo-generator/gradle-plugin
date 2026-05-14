@@ -12,6 +12,7 @@ version '1.4.0'
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 }
@@ -19,7 +20,7 @@ allprojects {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    api 'io.github.yojo-generator:generator:4.3.0'
+    api 'io.github.yojo-generator:generator:4.4.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
 }

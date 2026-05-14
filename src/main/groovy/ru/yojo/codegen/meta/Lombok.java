@@ -10,6 +10,7 @@ public class Lombok {
     @Input private Boolean noArgsConstructor = true;
     @Input private Accessors accessors;
     @Input private EqualsAndHashCode equalsAndHashCode;
+    @Input private Builder builder;
 
     // -- DSL: accessors { ... }
     @SuppressWarnings("unused")
@@ -25,6 +26,13 @@ public class Lombok {
         YojoConfig.applyClosureToDelegate(closure, equalsAndHashCode);
     }
 
+    // -- DSL: builder { ... }
+    @SuppressWarnings("unused")
+    public void builder(Closure<?> closure) {
+        if (builder == null) builder = new Builder();
+        YojoConfig.applyClosureToDelegate(closure, builder);
+    }
+
     // -- Getters/setters
     public Boolean isEnable() { return enable != null ? enable : true; }
     public void enable(Boolean enable) { this.enable = enable; }
@@ -36,4 +44,6 @@ public class Lombok {
     public void accessors(Accessors accessors) { this.accessors = accessors; }
     public EqualsAndHashCode getEqualsAndHashCode() { return equalsAndHashCode; }
     public void equalsAndHashCode(EqualsAndHashCode equalsAndHashCode) { this.equalsAndHashCode = equalsAndHashCode; }
+    public Builder getBuilder() { return builder; }
+    public void builder(Builder builder) { this.builder = builder; }
 }

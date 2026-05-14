@@ -7,6 +7,7 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.tasks.Input;
 import ru.yojo.codegen.YojoConfig;
 import ru.yojo.codegen.domain.lombok.Accessors;
+import ru.yojo.codegen.domain.lombok.BuilderProperties;
 import ru.yojo.codegen.domain.lombok.EqualsAndHashCode;
 import ru.yojo.codegen.domain.lombok.LombokProperties;
 
@@ -74,6 +75,20 @@ public class Configuration {
 
     // -- Вспомогательные методы для преобразования в domain-модель Yojo
     public ru.yojo.codegen.domain.lombok.LombokProperties toLombokProperties() {
+        return toLombokProperties(this.lombok);
+    }
+
+    /**
+     * Converts a plugin {@link Lombok} meta instance into a generator domain {@link LombokProperties}.
+     * <p>
+     * This method applies a <strong>full override</strong> strategy: every field is populated with
+     * either the user-configured value or the plugin's default, producing a complete
+     * {@code LombokProperties} that can be used independently of any global configuration.
+     *
+     * @param lombok the plugin Lombok meta instance (must not be {@code null})
+     * @return fully-populated {@link LombokProperties}
+     */
+    public static LombokProperties toLombokProperties(Lombok lombok) {
         LombokProperties lombokProperties = new LombokProperties(
                 lombok.isEnable(),
                 lombok.isAllArgsConstructor(),
@@ -92,6 +107,15 @@ public class Configuration {
             lombokProperties.setEqualsAndHashCode(equalsAndHashCode);
         }
         lombokProperties.setNoArgsConstructor(lombok.isNoArgsConstructor());
+
+        if (lombok.getBuilder() != null) {
+            lombokProperties.setBuilder(new BuilderProperties(
+                    lombok.getBuilder().isEnable(),
+                    lombok.getBuilder().isSingular(),
+                    lombok.getBuilder().isBuilderDefault()
+            ));
+        }
+
         return lombokProperties;
     }
 
@@ -102,6 +126,9 @@ public class Configuration {
             domain.setInputDirectory(sp.getInputDirectory());
             domain.setOutputDirectory(sp.getOutputDirectory());
             domain.setPackageLocation(sp.getPackageLocation());
+            if (sp.getLombok() != null) {
+                domain.setLombokProperties(toLombokProperties(sp.getLombok()));
+            }
             return domain;
         }).collect(java.util.stream.Collectors.toList());
     }

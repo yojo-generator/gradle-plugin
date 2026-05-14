@@ -1,6 +1,9 @@
 package ru.yojo.codegen.meta;
 
+import groovy.lang.Closure;
 import org.gradle.api.tasks.Input;
+import ru.yojo.codegen.YojoConfig;
+
 import javax.inject.Inject;
 
 public class SpecificationProperties {
@@ -10,10 +13,18 @@ public class SpecificationProperties {
     @Input private String inputDirectory;
     @Input private String outputDirectory;
     @Input private String packageLocation;
+    @Input private Lombok lombok;
 
     @Inject
     public SpecificationProperties(String name) {
         this.name = name;
+    }
+
+    // -- DSL: lombok { ... } (per-spec overrides)
+    @SuppressWarnings("unused")
+    public void lombok(Closure<?> closure) {
+        if (lombok == null) lombok = new Lombok();
+        YojoConfig.applyClosureToDelegate(closure, lombok);
     }
 
     public String getName() { return name; }
@@ -29,4 +40,7 @@ public class SpecificationProperties {
     public void setPackageLocation(String packageLocation) { this.packageLocation = packageLocation; }
 
     public void setSpecName(String specName) { this.specName = specName; }
+
+    public Lombok getLombok() { return lombok; }
+    public void setLombok(Lombok lombok) { this.lombok = lombok; }
 }
