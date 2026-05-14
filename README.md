@@ -2,7 +2,7 @@
 
 **AsyncAPI → Java DTO Generator for Gradle**
 
-✅ Multi-spec · ✅ AsyncAPI v2.6/v3.0 · ✅ Lombok · ✅ Polymorphism · ✅ Bean Validation · ✅ Enums with descriptions
+✅ Multi-spec · ✅ AsyncAPI v2.6/v3.0 · ✅ Lombok · ✅ Builder · ✅ Polymorphism · ✅ Bean Validation · ✅ Enums with descriptions
 
 ![Yojo Banner](./yojo.png)
 
@@ -30,14 +30,13 @@
 ```groovy
 // build.gradle
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.3.0'
-}
+    id 'io.github.yojo-generator.gradle-plugin' version '1.4.0'
 ```
 
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.3.0"
+    id("io.github.yojo-generator.gradle-plugin") version "1.4.0"
 }
 ```
 
@@ -253,6 +252,7 @@ Fallback when `validationApi` is not set. Uses version-based heuristic:
 | `noArgsConstructor` | `boolean` | `true` | Adds `@NoArgsConstructor` |
 | `accessors { ... }` | closure | — | `@Accessors` configuration |
 | `equalsAndHashCode { ... }` | closure | — | `@EqualsAndHashCode` configuration |
+| `builder { ... }` | closure | — | `@Builder` / manual Builder configuration |
 
 #### `accessors { ... }`
 
@@ -268,6 +268,18 @@ Fallback when `validationApi` is not set. Uses version-based heuristic:
 |---|---|---|---|
 | `enable` | `boolean` | `false` | Generate `@EqualsAndHashCode` |
 | `callSuper` | `boolean` | — | `callSuper = true` if set |
+
+#### `builder { ... }`
+
+| Option | Type | Default | Effect |
+|---|---|---|---|
+| `enable` | `boolean` | `false` | Generate `@Builder` (Lombok) or manual Builder class (no Lombok) |
+| `singular` | `boolean` | `true` | Add `@Singular` / singular adder methods for `List`/`Set` fields |
+| `builderDefault` | `boolean` | `true` | Apply `@Builder.Default` / propagate default values to Builder |
+
+> The singular name is derived automatically by removing the trailing `s` from the field name
+> (e.g., `names` → `"name"`). When Lombok is disabled, a full static inner `Builder` class
+> with fluent setters, singular adders, and `build()` method is generated instead. |
 
 ### Complete DSL example
 
@@ -304,6 +316,11 @@ yojo {
                 equalsAndHashCode {
                     enable = true
                     callSuper = false
+                }
+                builder {
+                    enable = true
+                    singular = true
+                    builderDefault = true
                 }
             }
         }
@@ -346,6 +363,11 @@ yojo {
                 equalsAndHashCode {
                     enable.set(true)
                     callSuper.set(false)
+                }
+                builder {
+                    enable.set(true)
+                    singular.set(true)
+                    builderDefault.set(true)
                 }
             }
         }
@@ -632,7 +654,40 @@ ImmutableDto:
 - `@NoArgsConstructor` is automatically skipped when uninitialized finals exist
 - If `default` is also set: `private final Type field = defaultValue;`
 
-### 9. Inheritance and interfaces
+### 9. Builder pattern (`@Builder` / manual Builder)
+
+The builder pattern is controlled via Gradle DSL `lombok { builder { ... } }` or per-schema via `x-lombok`:
+
+```yaml
+MyDto:
+  type: object
+  x-lombok:
+    builder:
+      enable: true
+      singular: true
+      builderDefault: true
+  properties:
+    names:
+      type: array
+      items:
+        type: string                                      # @Singular("name")
+    scores:
+      type: array
+      format: set
+      items:
+        type: integer                                     # @Singular("score")
+    message:
+      type: string
+      default: Hello                                      # @Builder.Default
+    count:
+      type: integer                                       # regular field
+```
+
+**With Lombok:** generates `@Builder`, `@Singular`, `@Builder.Default` annotations.
+
+**Without Lombok:** generates a full static inner `Builder` class with fluent setters, singular adders (e.g., `name()`, `score()`), and `build()` method.
+
+### 10. Inheritance and interfaces
 
 ```yaml
 # Extend a superclass
@@ -665,7 +720,7 @@ MyService:
     - com.example.Domain        # → import com.example.Domain;
 ```
 
-### 10. Custom annotations
+### 11. Custom annotations
 
 ```yaml
 # Class-level annotations
@@ -686,7 +741,7 @@ MySchema:
         - com.example.MyFieldAnnotation
 ```
 
-### 11. Existing types (reference external classes)
+### 12. Existing types (reference external classes)
 
 ```yaml
 properties:
@@ -697,7 +752,7 @@ properties:
     package: com.example.domain    # → private User author; + import com.example.domain.User;
 ```
 
-### 12. Validation groups
+### 13. Validation groups
 
 ```yaml
 MySchema:
@@ -716,7 +771,7 @@ MySchema:
       type: integer                # → no group annotation (not in validate-by list)
 ```
 
-### 13. Messages
+### 14. Messages
 
 ```yaml
 channels:
@@ -753,7 +808,7 @@ channels:
           $ref: '#/components/schemas/EventPayload'
 ```
 
-### 14. Attribute deprecation notice
+### 15. Attribute deprecation notice
 
 Legacy attribute names (without `x-` prefix) still work but log deprecation warnings:
 
@@ -836,7 +891,7 @@ Legacy attribute names (without `x-` prefix) still work but log deprecation warn
 | `@JsonTypeId` on discriminator fields | ✅ Done (core 4.3.0) |
 | Jackson annotations (`@JsonProperty`, `@JsonFormat`) | 🔄 In development |
 | AsyncAPI spec validation (pre-generation) | 🔄 In development |
-| Lombok extensions (`@Builder`, `@SuperBuilder`) | 🔄 In development |
+| Lombok extensions (`@Builder`, `@Singular`, `@Builder.Default`) | ✅ Done (generator 4.4.0) |
 | Gradle configuration cache support | 📋 Planned |
 | OpenAPI 3.1 support | 📋 Planned Q2 2026 |
 
