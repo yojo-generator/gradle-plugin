@@ -1,8 +1,8 @@
 # YOJO Gradle Plugin
 
-**AsyncAPI → Java DTO Generator for Gradle**
+**Gradle plugin for generating Java DTOs from AsyncAPI YAML specs** — code generation at build time. Parse AsyncAPI v2.0/v2.6/v3.0 contracts and produce Java POJOs with Lombok, Jackson, Jakarta Bean Validation, and Builder pattern support.
 
-✅ Multi-spec · ✅ AsyncAPI v2.6/v3.0 · ✅ Lombok · ✅ Builder · ✅ Polymorphism · ✅ Bean Validation · ✅ Enums with descriptions
+✅ Multi-spec · ✅ AsyncAPI v2.6/v3.0 · ✅ Lombok (@Data, @Builder, @Value) · ✅ Jackson polymorphism (@JsonTypeInfo) · ✅ Bean Validation (@NotBlank, @Email) · ✅ Enums with descriptions · ✅ Manual Builder class
 
 ![Yojo Banner](./yojo.png)
 
