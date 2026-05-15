@@ -102,8 +102,11 @@ public class Configuration {
 
         if (lombok.getEqualsAndHashCode() != null) {
             EqualsAndHashCode equalsAndHashCode = new EqualsAndHashCode();
-            equalsAndHashCode.setEnable(lombok.getEqualsAndHashCode().isEnable());
-            equalsAndHashCode.setCallSuper(lombok.getEqualsAndHashCode().getCallSuper());
+            // Implicitly enable @EqualsAndHashCode when the block is present (matching YAML x-lombok behavior)
+            equalsAndHashCode.setEnable(true);
+            if (lombok.getEqualsAndHashCode().getCallSuper() != null) {
+                equalsAndHashCode.setCallSuper(lombok.getEqualsAndHashCode().getCallSuper());
+            }
             lombokProperties.setEqualsAndHashCode(equalsAndHashCode);
         }
         lombokProperties.setNoArgsConstructor(lombok.isNoArgsConstructor());
@@ -115,6 +118,15 @@ public class Configuration {
                     lombok.getBuilder().isBuilderDefault()
             ));
         }
+
+        // New Lombok annotations (4.5.0)
+        lombokProperties.setValue(lombok.isValue());
+        lombokProperties.setWith(lombok.isWith());
+        lombokProperties.setGetter(lombok.isGetter());
+        lombokProperties.setSetter(lombok.isSetter());
+        lombokProperties.setToString(lombok.isToString());
+        lombokProperties.setRequiredArgsConstructor(lombok.isRequiredArgsConstructor());
+        lombokProperties.setSlf4j(lombok.isSlf4j());
 
         return lombokProperties;
     }
