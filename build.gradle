@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'io.github.yojo-generator'
-version '1.5.0'
+version '1.6.0'
 
 allprojects {
     repositories {
@@ -20,7 +20,7 @@ allprojects {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    api 'io.github.yojo-generator:generator:4.5.0'
+    api 'io.github.yojo-generator:generator:4.6.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
 }
