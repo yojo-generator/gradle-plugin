@@ -30,13 +30,13 @@
 ```groovy
 // build.gradle
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.4.0'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.6.0'
 ```
 
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.4.0"
+    id("io.github.yojo-generator.gradle-plugin") version "1.6.0"
 }
 ```
 
@@ -635,7 +635,48 @@ public class Cat extends Pet { ... }
 public class StickInsect extends Pet { ... }
 ```
 
-### 8. Final fields (`x-final`)
+### 8. Jackson annotations (`x-json-property`, `x-json-format`, `x-json-include`, `x-json-ignore`, `x-json-naming`)
+
+Field-level and class-level Jackson annotations via `x-json-*` YAML attributes:
+
+```yaml
+JacksonTestSchema:
+  type: object
+  x-json-naming: SNAKE_CASE          # Auto @JsonProperty("snake_name") for all fields
+  x-json-include: NON_NULL           # @JsonInclude(Include.NON_NULL) on class
+  properties:
+    userId:
+      type: integer
+      format: int64                  # → @JsonProperty("user_id")
+    createdAt:
+      type: string
+      format: date-time
+      x-json-format:
+        pattern: "yyyy-MM-dd'T'HH:mm:ss"
+        timezone: "UTC"              # → @JsonFormat(pattern = "...", timezone = "UTC")
+    internalCode:
+      type: string
+      x-json-ignore: true            # → @JsonIgnore
+    displayName:
+      type: string
+      x-json-property: display_name_custom  # → Overrides naming strategy
+```
+
+Generated:
+```java
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class JacksonTestSchema {
+    @JsonProperty("user_id") private Long userId;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
+    @JsonProperty("created_at") private OffsetDateTime createdAt;
+    @JsonIgnore @JsonProperty("internal_code") private String internalCode;
+    @JsonProperty("display_name_custom") private String displayName;
+}
+```
+
+---
+
+### 9. Final fields (`x-final`)
 
 ```yaml
 ImmutableDto:
@@ -654,7 +695,7 @@ ImmutableDto:
 - `@NoArgsConstructor` is automatically skipped when uninitialized finals exist
 - If `default` is also set: `private final Type field = defaultValue;`
 
-### 9. Builder pattern (`@Builder` / manual Builder)
+### 10. Builder pattern (`@Builder` / manual Builder)
 
 The builder pattern is controlled via Gradle DSL `lombok { builder { ... } }` or per-schema via `x-lombok`:
 
@@ -687,7 +728,7 @@ MyDto:
 
 **Without Lombok:** generates a full static inner `Builder` class with fluent setters, singular adders (e.g., `name()`, `score()`), and `build()` method.
 
-### 10. Inheritance and interfaces
+### 11. Inheritance and interfaces
 
 ```yaml
 # Extend a superclass
@@ -720,7 +761,7 @@ MyService:
     - com.example.Domain        # → import com.example.Domain;
 ```
 
-### 11. Custom annotations
+### 12. Custom annotations
 
 ```yaml
 # Class-level annotations
@@ -741,7 +782,7 @@ MySchema:
         - com.example.MyFieldAnnotation
 ```
 
-### 12. Existing types (reference external classes)
+### 13. Existing types (reference external classes)
 
 ```yaml
 properties:
@@ -752,7 +793,7 @@ properties:
     package: com.example.domain    # → private User author; + import com.example.domain.User;
 ```
 
-### 13. Validation groups
+### 14. Validation groups
 
 ```yaml
 MySchema:
@@ -771,7 +812,7 @@ MySchema:
       type: integer                # → no group annotation (not in validate-by list)
 ```
 
-### 14. Messages
+### 15. Messages
 
 ```yaml
 channels:
@@ -808,7 +849,7 @@ channels:
           $ref: '#/components/schemas/EventPayload'
 ```
 
-### 15. Attribute deprecation notice
+### 16. Attribute deprecation notice
 
 Legacy attribute names (without `x-` prefix) still work but log deprecation warnings:
 
@@ -889,7 +930,7 @@ Legacy attribute names (without `x-` prefix) still work but log deprecation warn
 | `x-` prefixed attributes (deprecation of legacy names) | ✅ Done (core 4.3.0) |
 | `x-final` immutable fields | ✅ Done (core 4.3.0) |
 | `@JsonTypeId` on discriminator fields | ✅ Done (core 4.3.0) |
-| Jackson annotations (`@JsonProperty`, `@JsonFormat`) | 🔄 In development |
+| Jackson annotations (`@JsonProperty`, `@JsonFormat`, `@JsonInclude`, `@JsonIgnore`, `x-json-naming: SNAKE_CASE`) | ✅ Done (core 4.6.0) |
 | AsyncAPI spec validation (pre-generation) | 🔄 In development |
 | Lombok extensions (`@Builder`, `@Singular`, `@Builder.Default`) | ✅ Done (generator 4.4.0) |
 | Gradle configuration cache support | 📋 Planned |
