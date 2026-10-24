@@ -20,7 +20,7 @@ gradle-plugin/
 │   │   └── EqualsAndHashCode.java    # @EqualsAndHashCode DSL
 │   └── util/
 ├── src/test/groovy/                  # Spock/Groovy tests
-├── build.gradle                      # Version: 1.5.0
+├── build.gradle                      # Version: 1.6.2
 ├── settings.gradle
 └── AGENTS.md                         # This file
 ```
