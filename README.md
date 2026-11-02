@@ -30,13 +30,13 @@
 ```groovy
 // build.gradle
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.6.2'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.6.3'
 ```
 
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.6.2"
+    id("io.github.yojo-generator.gradle-plugin") version "1.6.3"
 }
 ```
 
