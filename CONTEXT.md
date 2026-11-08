@@ -22,6 +22,7 @@ yojo {
                 }
             }
             validationApi("JAKARTA")  // or "JAVAX"
+            dateTimeType("INSTANT")   // or "OFFSET_DATE_TIME" (default)
             lombok {
                 enable = true
                 allArgsConstructor = false

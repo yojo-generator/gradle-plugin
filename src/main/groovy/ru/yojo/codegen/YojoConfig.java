@@ -35,6 +35,12 @@ public class YojoConfig {
         configuration.setSpringBootVersion(version);
     }
 
+    // DSL: dateTimeType("INSTANT") — Java type for format: date-time, "OFFSET_DATE_TIME" (default) or "INSTANT"
+    @SuppressWarnings("unused")
+    public void dateTimeType(String type) {
+        configuration.setDateTimeType(type);
+    }
+
     @SuppressWarnings("unused")
     public void lombok(Closure<?> closure) {
         YojoConfig.applyClosureToDelegate(closure, configuration.getLombok());

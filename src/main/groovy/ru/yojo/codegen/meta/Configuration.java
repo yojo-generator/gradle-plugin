@@ -19,6 +19,8 @@ public class Configuration {
     @Input
     private String springBootVersion;       // legacy fallback, used when validationApi is null
     @Input
+    private String dateTimeType;            // "OFFSET_DATE_TIME" (default) or "INSTANT"
+    @Input
     private Lombok lombok = new Lombok();
 
     // ✅ Multi-spec support
@@ -59,6 +61,18 @@ public class Configuration {
 
     public void setSpringBootVersion(String springBootVersion) {
         this.springBootVersion = springBootVersion;
+    }
+
+    /**
+     * Java type used for {@code format: date-time} properties: {@code "OFFSET_DATE_TIME"}
+     * (default) or {@code "INSTANT"}.
+     */
+    public String getDateTimeType() {
+        return dateTimeType;
+    }
+
+    public void setDateTimeType(String dateTimeType) {
+        this.dateTimeType = dateTimeType;
     }
 
     public Lombok getLombok() {
