@@ -30,13 +30,13 @@
 ```groovy
 // build.gradle
 plugins {
-    id 'io.github.yojo-generator.gradle-plugin' version '1.6.3'
+    id 'io.github.yojo-generator.gradle-plugin' version '1.6.5'
 ```
 
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("io.github.yojo-generator.gradle-plugin") version "1.6.3"
+    id("io.github.yojo-generator.gradle-plugin") version "1.6.5"
 }
 ```
 
@@ -366,56 +366,10 @@ tasks.compileJava {
 }
 ```
 
-```kotlin
-// build.gradle.kts
-yojo {
-    configurations {
-        create("main") {
-            specificationProperties {
-                register("api") {
-                    specName.set("order-service.yaml")
-                    inputDirectory.set(layout.projectDirectory.dir("contract").asFile.absolutePath)
-                    outputDirectory.set(layout.buildDirectory
-                        .dir("generated/sources/yojo/com/example/api").get().asFile.absolutePath)
-                    packageLocation.set("com.example.api")
-                }
-            }
-            validationApi.set("JAKARTA")
-            lombok {
-                enable.set(true)
-                allArgsConstructor.set(false)
-                noArgsConstructor.set(true)
-                accessors {
-                    enable.set(true)
-                    fluent.set(false)
-                    chain.set(true)
-                }
-                equalsAndHashCode {
-                    enable.set(true)
-                    callSuper.set(false)
-                }
-                builder {
-                    enable.set(true)
-                    singular.set(true)
-                    builderDefault.set(true)
-                }
-            }
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir(layout.buildDirectory.dir("generated/sources/yojo"))
-        }
-    }
-}
-
-tasks.compileJava {
-    dependsOn("generateClasses")
-}
-```
+> **Kotlin DSL is not supported by the configuration block.** All DSL methods accept Groovy
+> closures, so `yojo { ... }` only works in `build.gradle`. Projects that keep
+> `build.gradle.kts` can put the `yojo { }` configuration into a separate `build.gradle`
+> and apply it with `apply(from = "yojo.gradle")` (or `apply from: "yojo.gradle"` in Groovy).
 
 ---
 
