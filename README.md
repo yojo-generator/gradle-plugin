@@ -196,6 +196,7 @@ yojo {
             specificationProperties { ... }   // required: at least one spec
             validationApi("JAKARTA")          // optional: "JAKARTA" or "JAVAX"
             // springBootVersion("3.2.0")    // legacy fallback
+            dateTimeType("INSTANT")           // optional: "OFFSET_DATE_TIME" or "INSTANT"
             lombok { ... }                    // optional: Lombok settings
         }
     }
@@ -242,6 +243,35 @@ Fallback when `validationApi` is not set. Uses version-based heuristic:
 | omitted | `jakarta.validation.*` | (defaults to Jakarta) |
 
 > `validationApi` takes precedence. Only use `springBootVersion` if you need the version-based heuristic.
+
+### `dateTimeType`
+
+Java type used for `format: date-time` properties, applied to every specification of the configuration:
+
+| Value | Generated type | Example |
+|---|---|---|
+| `"OFFSET_DATE_TIME"` | `java.time.OffsetDateTime` | `private OffsetDateTime createdAt;` |
+| `"INSTANT"` | `java.time.Instant` | `private Instant createdAt;` |
+| omitted | `java.time.OffsetDateTime` | (defaults to `OffsetDateTime`) |
+
+```yaml
+createdAt:
+  type: string
+  format: date-time
+```
+
+```groovy
+yojo {
+    configurations {
+        create("main") {
+            specificationProperties { ... }
+            dateTimeType("INSTANT")
+        }
+    }
+}
+```
+
+The value is case-insensitive. Collections, `Set` fields and map values derived from `date-time` use the same type. Requires generator `4.7.0` or newer.
 
 ### `lombok { ... }`
 

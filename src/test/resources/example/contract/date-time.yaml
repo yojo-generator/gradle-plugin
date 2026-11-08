@@ -1,0 +1,19 @@
+asyncapi: 3.0.0
+info:
+  title: Date-Time Type Test
+  version: 1.0.0
+  description: Contract for the configurable Java type of format date-time.
+
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        history:
+          type: array
+          items:
+            type: string
+            format: date-time
